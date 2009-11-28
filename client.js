@@ -7,7 +7,7 @@ var serverHost = 'localhost';
 var serverPath = '/';
 var clientCreationDelay = 0.01 * 1000;
 var reportDelay = 5 * 1000;
-var clientLimit = 1;
+var clientLimit = 100;
 var responseCount = 0;
 var clients = [];
  
@@ -34,7 +34,17 @@ function handleResponseComplete () {
 	responseCount++;
 }
 
-function formatStats () { return('LIMIT: ' + clientLimit + ' | CONN: ' + clients.length + ' | RESP: ' + responseCount); }
+function formatStats () {
+	var memInfo = process.memoryUsage();
+	return('LIMIT: ' + clientLimit
+		+ ' | CONN: ' + clients.length
+		+ ' | RESP: ' + responseCount
+		+ " | RS: " + memInfo.rss
+		+ " | VS: " + memInfo.vsize
+		+ " | HT: " + memInfo.heapTotal
+		+ " | HU: " + memInfo.heapUsed
+		);
+}
 
 process.addListener("SIGINT", function () {
 	sys.puts("Quitting. " + formatStats());

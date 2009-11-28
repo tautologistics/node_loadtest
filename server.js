@@ -18,7 +18,17 @@ function handleConnOpen (conn) {
 	conn.addListener("close", handleConnClose);
 }
 
-function formatConnStat () { return("NOW: " + Math.round(new Date().getTime() / 1000) + " | OC: " + connCount + " | TC: " + connCountTotal); }
+function formatConnStat () {
+	var memInfo = process.memoryUsage();
+	return("NOW: " + Math.round(new Date().getTime() / 1000)
+		+ " | OC: " + connCount
+		+ " | TC: " + connCountTotal
+		+ " | RS: " + memInfo.rss
+		+ " | VS: " + memInfo.vsize
+		+ " | HT: " + memInfo.heapTotal
+		+ " | HU: " + memInfo.heapUsed
+		);
+}
 
 function connStat () {
 	sys.puts(formatConnStat());
