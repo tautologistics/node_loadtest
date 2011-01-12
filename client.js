@@ -7,7 +7,7 @@ var serverHost = 'localhost';
 var serverPath = '/';
 var clientCreationDelay = 0.01 * 1000;
 var reportDelay = 5 * 1000;
-var clientLimit = 100;
+var clientLimit = 1000;
 var responseCount = 0;
 var clients = [];
  
@@ -19,14 +19,13 @@ function handleClientConnect () { }
 
 function handleClientClose (self) {
 	if (self.loop)
-		self.get(serverPath, { "Host": serverHost })
-			.finish(handleRequestFinish);
+		self.request(serverPath, { "Host": serverHost })
+			.addListener("response", handleRequestFinish);
 }
 
 function handleResponseBody (chunk) { }
 
 function handleRequestFinish (res) {
-	//res.addListener('body', handleResponseBody);
 	res.addListener('complete', handleResponseComplete);
 }
 
@@ -98,6 +97,7 @@ sys.puts("Starting clients to load test http://" + serverHost + ":" + serverPort
 
 checkClientCount();
 
-repl.scope.add = add;
-repl.scope.rem = rem;
-repl.start();
+var replConext = repl.start().context
+replConext.add = add;
+replConext.rem = rem;
+
